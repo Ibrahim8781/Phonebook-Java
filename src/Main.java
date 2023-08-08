@@ -1,14 +1,11 @@
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
 import java.util.Scanner;
 
 class Contact{
 
-    private String contactName ;
+    private String  contactName ;
     private String contactEmail;
     private String contactNumber;
 
@@ -21,20 +18,11 @@ class Contact{
     public String getContactName() {
         return contactName;
     }
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
     public String getContactEmail() {
         return contactEmail;
     }
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
     public String getContactNumber() {
         return contactNumber;
-    }
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
     }
 
 }
@@ -42,11 +30,11 @@ class Contact{
 class Phonebook{
 
     public List<Contact> contactsList;
-
     public Phonebook() {
         contactsList = new ArrayList<>();
     }
 
+    // Methods to manage the PhoneBook
     public void addContact(Contact contact) { contactsList.add(contact);
         System.out.println(" Contact Added Successfully"); }
 
@@ -71,36 +59,6 @@ class Phonebook{
 
         return searchResult;
     }
-/*
-    public void makePhonebook(){
-        File PhoneBook = new File("PhoneBook.txt");
-        try {
-            PhoneBook.createNewFile();
-            System.out.println(" PhoneBook created successfully. ");
-        } catch (IOException e) {
-            System.out.println(" Error Found \n Cannot create PhoneBook");
-            throw new RuntimeException(e);
-        }
-    }
-*/
-
-/*
-    public void saveContacts(String fileName){
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (Contact contact : contactsList) {
-                writer.write("Name: " + contact.getContactName() + "\n");
-                writer.write("Phone: " + contact.getContactNumber() + "\n");
-                writer.write("Email: " + contact.getContactEmail() + "\n");
-                writer.write("--------------------------------\n");
-            }
-        } catch (IOException e) {
-            System.err.println("Error writing contacts to file: " + e.getMessage());
-        }
-    }
-*/
-
-
 
 }
 
@@ -129,14 +87,14 @@ public class Main {
 
 
         while (true) {
-            System.out.println("\t MENU ");
+            System.out.println("-------------------------");
+            System.out.println("          MENU ");
+            System.out.println("-------------------------\n");
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
             System.out.println("3. Delete Contact");
             System.out.println("4. Search Contact");
             System.out.println("5. Display Contacts");
-//            System.out.println("6. Create PhoneBook");
-//            System.out.println("7. Create PhoneBook");
             System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -144,7 +102,6 @@ public class Main {
 
             switch (choice) {
                 case 1:
-
                     Scanner scanner1 = new Scanner(System.in);
                     String name;
                     String email;
@@ -162,12 +119,11 @@ public class Main {
                 case 2:
 
                     // Edit an existing contact by updating its attributes
-                    // Read index of the contact to edit, then read updated attributes
-
+                    // Reading index of the contact to edit, then read updated attributes
                     String name2;
                     String email2;
                     String phone2;
-                    int index2 =0;
+                    int index2;
 
                     System.out.println("Enter Index of Contact You want to Update");
                     index2 = scanner.nextInt();
@@ -178,9 +134,12 @@ public class Main {
                     System.out.println("Enter Updated Phone Number");
                     phone2 = scanner.nextLine();
 
+                    // making new contact with update attributes
                     Contact updatedContact2 = new Contact(name2,email2,phone2);
 
                     phonebook.editContact(index2 , updatedContact2);
+                    System.out.println("\n Contact Update Successfully ");
+                    System.out.println("-----------------------------------");
                     break;
                 case 3:
 
@@ -195,23 +154,51 @@ public class Main {
                 case 4:
 
                     // Search for a contact by name or phone number
-                    // Read search query from user
+                    // Read search from user
 
                     String ToFindString;
                     System.out.println(" Enter the Name or Phone Number You Want to search");
                     ToFindString = scanner.nextLine();
 
                     Contact ToFindContact = phonebook.searchContacts(ToFindString);
+                    // Displaying Contact Details of Contact TO FIND
+                    System.out.println(" Details of To Be Searched Contacts ");
                     System.out.println(ToFindContact.getContactName());
                     System.out.println(ToFindContact.getContactNumber());
                     System.out.println(ToFindContact.getContactEmail());
-
+                    System.out.println("-----------------------------------");
                     break;
                 case 5:
 
+                    List<Contact> contactsList = phonebook.contactsList;
+                    String fileName = "PhoneBook.txt";
+
+                    // Writing all the contact details from array list to file Phonebook.txt
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                        for (Contact contact : contactsList) {
+                            writer.write("Name: " + contact.getContactName() + "\n");
+                            writer.write("Phone: " + contact.getContactNumber() + "\n");
+                            writer.write("Email: " + contact.getContactEmail() + "\n");
+                            writer.write("--------------------------------\n");
+                        }
+                        System.out.println("\nContact details written to " + fileName);
+                    } catch (IOException e) {
+                        System.err.println("\nError writing contact details: " + e.getMessage());
+                    }
 
                     // Display all contacts in the phonebook
-                    System.out.println(" Displaying all contacts");
+                    System.out.println(" \n Displaying all contacts from Phonebook");
+
+                    try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                    } catch (IOException e) {
+                        System.err.println("\n Error reading the file: " + e.getMessage());
+                    }
+
+                   /* loop to display contents of array list
                     for (int i = 0 ; i< phonebook.contactsList.size() ; i++)
                     {
                         Contact contact = phonebook.contactsList.get(i);
@@ -220,14 +207,11 @@ public class Main {
                         System.out.println("Phone: " + contact.getContactNumber());
                         System.out.println("Email: " + contact.getContactEmail());
                         System.out.println("--------------------------------");
-                    }
-
-
+                    }*/
                 case 6:
-//                    phonebook.makePhonebook();
-                    break;
-                case 7:
-                    System.out.println("Exiting...");
+                    System.out.println("-----------------------------------");
+                    System.out.println("            Exiting...");
+                    System.out.println("-----------------------------------");
                     return;
                 default:
                     System.out.println("Invalid choice");
