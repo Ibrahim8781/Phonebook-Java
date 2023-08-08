@@ -47,10 +47,8 @@ class Phonebook{
         contactsList = new ArrayList<>();
     }
 
-    public void addContact(Contact contact) {
-        contactsList.add(contact);
-
-    }
+    public void addContact(Contact contact) { contactsList.add(contact);
+        System.out.println(" Contact Added Successfully"); }
 
     public void editContact(int index, Contact updatedContact) {
         contactsList.set(index, updatedContact);
@@ -73,9 +71,9 @@ class Phonebook{
 
         return searchResult;
     }
+/*
     public void makePhonebook(){
         File PhoneBook = new File("PhoneBook.txt");
-
         try {
             PhoneBook.createNewFile();
             System.out.println(" PhoneBook created successfully. ");
@@ -84,7 +82,9 @@ class Phonebook{
             throw new RuntimeException(e);
         }
     }
+*/
 
+/*
     public void saveContacts(String fileName){
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
@@ -98,6 +98,7 @@ class Phonebook{
             System.err.println("Error writing contacts to file: " + e.getMessage());
         }
     }
+*/
 
 
 
@@ -111,13 +112,30 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Phonebook phonebook = new Phonebook();
 
+        File PhoneBookFile = new File("PhoneBook.txt");
+
+        if(PhoneBookFile.exists()) {
+            System.out.println("File Phone Book already exists: \n New Phonebook Not Created "  );
+        }
+        else {
+            try {
+                PhoneBookFile.createNewFile();
+                System.out.println(" PhoneBook created successfully. ");
+            } catch (IOException e) {
+                System.out.println(" Error Found \n Cannot create PhoneBook");
+                throw new RuntimeException(e);
+            }
+        }
+
+
         while (true) {
+            System.out.println("\t MENU ");
             System.out.println("1. Add Contact");
             System.out.println("2. Edit Contact");
             System.out.println("3. Delete Contact");
             System.out.println("4. Search Contact");
             System.out.println("5. Display Contacts");
-            System.out.println("6. Create PhoneBook");
+//            System.out.println("6. Create PhoneBook");
 //            System.out.println("7. Create PhoneBook");
             System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
@@ -149,10 +167,10 @@ public class Main {
                     String name2;
                     String email2;
                     String phone2;
-                    int index =0;
+                    int index2 =0;
 
                     System.out.println("Enter Index of Contact You want to Update");
-                    index = scanner.nextInt();
+                    index2 = scanner.nextInt();
                     System.out.println("Enter Update Name");
                     name2 = scanner.nextLine();
                     System.out.println("Enter Update Email");
@@ -162,13 +180,12 @@ public class Main {
 
                     Contact updatedContact2 = new Contact(name2,email2,phone2);
 
-                    phonebook.editContact(index , updatedContact2);
+                    phonebook.editContact(index2 , updatedContact2);
                     break;
                 case 3:
 
                     // Delete a contact by index
                     // Read index from user
-
                     int index3;
                     System.out.println("Enter Index of Contact You want to Delete");
                     index3 = scanner.nextInt();
@@ -192,10 +209,22 @@ public class Main {
                     break;
                 case 5:
 
+
                     // Display all contacts in the phonebook
+                    System.out.println(" Displaying all contacts");
+                    for (int i = 0 ; i< phonebook.contactsList.size() ; i++)
+                    {
+                        Contact contact = phonebook.contactsList.get(i);
+                        System.out.println("Contact " + (i + 1) + ":");
+                        System.out.println("Name: " + contact.getContactName());
+                        System.out.println("Phone: " + contact.getContactNumber());
+                        System.out.println("Email: " + contact.getContactEmail());
+                        System.out.println("--------------------------------");
+                    }
+
 
                 case 6:
-                    phonebook.makePhonebook();
+//                    phonebook.makePhonebook();
                     break;
                 case 7:
                     System.out.println("Exiting...");
